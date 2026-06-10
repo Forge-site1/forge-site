@@ -1,4 +1,5 @@
 exports.handler = async (event) => {
+  console.log("KEY EXISTS:", !!process.env.BREVO_API_KEY);
   try {
     const { email } = JSON.parse(event.body);
 
