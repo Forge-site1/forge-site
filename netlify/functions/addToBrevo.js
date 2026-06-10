@@ -21,15 +21,17 @@ exports.handler = async (event) => {
 
     const data = await response.text();
 
-console.log("BREVO STATUS:", response.status);
-console.log("BREVO RESPONSE:", data);
+    console.log("STATUS:", response.status);
+    console.log("RESPONSE:", data);
 
-return {
-  statusCode: response.status,
-  body: data
-};
+    return {
+      statusCode: response.status,
+      body: data
+    };
 
   } catch (error) {
+    console.log("ERROR:", error);
+
     return {
       statusCode: 500,
       body: JSON.stringify({
