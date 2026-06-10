@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORGE — Discipline. Focus. Freedom.</title>
+<meta name="description" content="The productivity app that punishes you for being lazy. Track focus. Build habits. Earn Forge Points. Become unstoppable.">
+<style>
+  :root {
+    --red: #e03030;
+    --red-dim: rgba(224,48,48,0.12);
+    --red-glow: rgba(224,48,48,0.3);
+    --bg: #080808;
+    --bg2: #0f0f0f;
+    --bg3: #141414;
+    --text: #ffffff;
+    --text2: rgba(255,255,255,0.55);
+    --text3: rgba(255,255,255,0.25);
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(224,48,48,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    overflow-x:hidden; line-height:1.6;
+  }
+  body::after {
+    content:''; position:fixed; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+    background-size:80px 80px; pointer-events:none; z-index:0;
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:20px 40px; display:flex; align-items:center; justify-content:space-between;
+    background:rgba(8,8,8,0.92); backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border); transition:padding 0.3s;
+  }
+  .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .nav-logo-icon { width:36px; height:36px; border-radius:10px; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 0 20px rgba(224,48,48,0.4); }
+  .nav-logo-txt { font-size:20px; font-weight:900; color:#fff; letter-spacing:4px; }
+  .nav-links { display:flex; gap:32px; }
+  .nav-links a { font-size:13px; color:var(--text2); text-decoration:none; letter-spacing:1px; transition:color 0.2s; }
+  .nav-links a:hover { color:#fff; }
+  .join-btn {
+    background:var(--red); color:#fff; border:none; padding:11px 26px;
+    border-radius:10px; font-size:13px; font-weight:800; letter-spacing:2px;
+    cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block;
+  }
+  .join-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(224,48,48,0.5); }
+  .join-btn:active { transform:scale(0.97); }
+
+  /* HERO */
+  .hero {
+    position:relative; min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:120px 24px 80px; overflow:hidden; z-index:1;
+  }
+  .hero-glow {
+    position:absolute; top:20%; left:50%; transform:translateX(-50%);
+    width:700px; height:700px;
+    background:radial-gradient(circle,rgba(224,48,48,0.1) 0%,transparent 70%);
+    pointer-events:none; animation:pulse-glow 4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%,100%{opacity:0.6;transform:translateX(-50%) scale(1);}
+    50%{opacity:1;transform:translateX(-50%) scale(1.15);}
+  }
+
+  .hero-email {
+  width: 100%;
+  max-width: 420px;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: white;
+  border-radius: 16px;
+  padding: 18px 20px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 14px;
+  transition: all .2s ease;
+}
+
+.hero-email:focus {
+  border-color: #e03030;
+  box-shadow: 0 0 0 4px rgba(224,48,48,.15);
+}
+
+.hero-email::placeholder {
+  color: rgba(255,255,255,.35);
+}
+
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--red-dim); border:1px solid var(--red-glow);
+    border-radius:100px; padding:8px 18px; font-size:11px; font-weight:700;
+    color:var(--red); letter-spacing:2px; margin-bottom:32px;
+    animation:fade-up 0.8s ease both;
+  }
+  .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--red); animation:blink 1.5s ease-in-out infinite; }
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .hero-title {
+    font-size:clamp(52px,8vw,100px); font-weight:900; line-height:0.95;
+    letter-spacing:-3px; margin-bottom:12px; animation:fade-up 0.8s ease 0.1s both;
+  }
+  .hero-title-red { color:var(--red); }
+  .hero-sub {
+    font-size:clamp(16px,2vw,21px); color:var(--text2); font-weight:300;
+    max-width:560px; margin:20px auto 48px;
+    animation:fade-up 0.8s ease 0.2s both; line-height:1.6;
+  }
+  .hero-sub strong { color:#fff; font-weight:600; }
+
+  /* HERO CTA */
+  .hero-cta-wrap {
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+    animation:fade-up 0.8s ease 0.3s both;
+  }
+  .hero-join-btn {
+    background:var(--red); color:#fff; border:none;
+    padding:20px 56px; border-radius:16px;
+    font-size:16px; font-weight:900; letter-spacing:3px;
+    cursor:pointer; transition:all 0.25s; text-decoration:none;
+    display:inline-block;
+    box-shadow:0 8px 32px rgba(224,48,48,0.35);
+  }
+  .hero-join-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 16px 48px rgba(224,48,48,0.55);
+  }
+  .hero-join-btn:active { transform:scale(0.97); }
+  .hero-cta-note { font-size:12px; color:var(--text3); letter-spacing:1px; }
+
+  .waitlist-social {
+    display:flex; align-items:center; gap:10px; margin-top:8px;
+    animation:fade-up 0.8s ease 0.45s both;
+  }
+  .waitlist-avatars { display:flex; }
+  .waitlist-avatar {
+    width:28px; height:28px; border-radius:50%; border:2px solid var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; margin-left:-8px; background:var(--bg3);
+  }
+  .waitlist-avatar:first-child { margin-left:0; }
+  .waitlist-count-txt { font-size:13px; color:var(--text3); }
+
+  /* PHONE */
+  .app-preview { margin-top:72px; display:flex; justify-content:center; animation:fade-up 0.8s ease 0.5s both; }
+  .phone-frame {
+    width:280px; height:570px; background:var(--bg2); border-radius:40px;
+    border:2px solid rgba(255,255,255,0.1); overflow:hidden;
+    box-shadow:0 40px 80px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04); position:relative;
+  }
+  .phone-notch { position:absolute; top:14px; left:50%; transform:translateX(-50%); width:80px; height:24px; background:#000; border-radius:12px; z-index:2; }
+  .phone-screen { width:100%; height:100%; background:#0a0a0a; padding:52px 14px 14px; display:flex; flex-direction:column; gap:8px; }
+  .phone-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2px; }
+  .phone-greeting { font-size:10px; color:var(--text3); }
+  .phone-name { font-size:19px; font-weight:800; color:#fff; }
+  .phone-skull { font-size:14px; opacity:0.35; }
+  .phone-fp-card { background:#141414; border-radius:10px; padding:10px 12px; border:1px solid rgba(224,48,48,0.15); }
+  .phone-fp-label { font-size:7px; color:var(--text3); letter-spacing:2px; margin-bottom:3px; }
+  .phone-fp-val { font-size:17px; font-weight:800; color:#fff; }
+  .phone-fp-bar { height:2px; background:rgba(255,255,255,0.07); border-radius:2px; margin-top:5px; overflow:hidden; }
+  .phone-fp-fill { height:100%; width:0; background:var(--red); border-radius:2px; animation:fill-bar 2s ease 1.5s forwards; }
+  @keyframes fill-bar{to{width:35%;}}
+  .phone-streak { background:#141414; border-radius:10px; padding:10px 12px; border:1px solid rgba(255,102,68,0.3); display:flex; align-items:center; justify-content:space-between; }
+  .phone-streak-left { display:flex; align-items:center; gap:7px; }
+  .phone-fire { font-size:22px; animation:fire 0.8s ease-in-out infinite alternate; }
+  @keyframes fire{to{transform:scale(1.12);}}
+  .phone-streak-num { font-size:24px; font-weight:900; color:#ff6644; }
+  .phone-streak-lbl { font-size:6px; color:var(--text3); letter-spacing:2px; }
+  .phone-buy { background:rgba(224,48,48,0.15); border:1px solid rgba(224,48,48,0.4); border-radius:5px; padding:4px 7px; font-size:7px; font-weight:800; color:var(--red); }
+  .phone-row { display:flex; gap:7px; }
+  .phone-mini { flex:1; background:#141414; border-radius:9px; padding:9px 10px; border:1px solid var(--border); }
+  .phone-mini-icon { font-size:14px; margin-bottom:3px; }
+  .phone-mini-lbl { font-size:5px; color:var(--text3); letter-spacing:1.5px; margin-bottom:3px; }
+  .phone-mini-val { font-size:16px; font-weight:900; color:var(--red); }
+  .phone-boss { background:#141414; border-radius:9px; padding:9px 11px; border:1px solid rgba(255,136,0,0.3); }
+  .phone-boss-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+  .phone-boss-left { display:flex; align-items:center; gap:5px; }
+  .phone-boss-lbl { font-size:5px; color:var(--text3); letter-spacing:1.5px; }
+  .phone-boss-name { font-size:9px; font-weight:800; color:#ff8800; }
+  .phone-boss-pct { font-size:9px; font-weight:800; color:#ff8800; background:rgba(255,136,0,0.15); border:1px solid rgba(255,136,0,0.3); border-radius:4px; padding:2px 5px; }
+  .phone-boss-bar { height:3px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+  .phone-boss-fill { height:100%; width:0; background:#ff8800; animation:boss-fill 2s ease 2s forwards; }
+  @keyframes boss-fill{to{width:45%;}}
+  .scroll-hint { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--text3); font-size:10px; letter-spacing:2px; animation:fade-up 1s ease 1s both; }
+  .scroll-line { width:1px; height:40px; background:linear-gradient(var(--red),transparent); animation:scroll-anim 1.5s ease-in-out infinite; }
+  @keyframes scroll-anim{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+  /* STATS */
+  .stats-bar { position:relative; z-index:1; background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:50px 24px; }
+  .stats-inner { max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:40px; text-align:center; }
+  .stat-num { font-size:44px; font-weight:900; color:var(--red); line-height:1; margin-bottom:8px; }
+  .stat-lbl { font-size:11px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; }
+
+  /* SECTIONS */
+  .section { position:relative; z-index:1; padding:100px 24px; max-width:1100px; margin:0 auto; }
+  .section-tag { display:inline-block; font-size:11px; font-weight:700; color:var(--red); letter-spacing:3px; margin-bottom:14px; }
+  .section-title { font-size:clamp(32px,5vw,58px); font-weight:900; line-height:1.05; letter-spacing:-1.5px; margin-bottom:14px; }
+  .section-sub { font-size:17px; color:var(--text2); font-weight:300; max-width:500px; line-height:1.6; }
+
+  /* FEATURES */
+  .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin-top:56px; }
+  .feature-card { background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:28px; transition:all 0.3s; position:relative; overflow:hidden; }
+  .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--card-color,var(--red)); opacity:0; transition:opacity 0.3s; }
+  .feature-card:hover { border-color:rgba(255,255,255,0.12); transform:translateY(-4px); }
+  .feature-card:hover::before { opacity:1; }
+  .feature-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:16px; background:var(--card-bg,rgba(224,48,48,0.08)); border:1px solid var(--card-border,rgba(224,48,48,0.2)); }
+  .feature-card h3 { font-size:17px; font-weight:700; margin-bottom:8px; }
+  .feature-card p { font-size:14px; color:var(--text2); line-height:1.6; }
+
+  /* CHALLENGES */
+  .challenges-section { position:relative; z-index:1; padding:100px 24px; overflow:hidden; }
+  .challenges-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .challenge-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:18px 20px; transition:all 0.3s; margin-bottom:12px; }
+  .challenge-card:hover { transform:translateX(6px); border-color:rgba(255,255,255,0.1); }
+  .challenge-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .diff-badge { font-size:9px; font-weight:800; letter-spacing:1px; padding:4px 10px; border-radius:6px; border:1px solid; }
+  .fp-badge { font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; }
+  .challenge-body { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .challenge-title { font-size:15px; font-weight:700; color:#fff; margin-bottom:2px; }
+  .challenge-desc { font-size:12px; color:var(--text2); }
+  .challenge-bar-wrap { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+  .challenge-bar-fill { height:100%; border-radius:2px; }
+  .challenge-status { font-size:11px; font-weight:600; margin-top:5px; }
+  .claim-btn { width:100%; margin-top:10px; border-radius:10px; padding:12px; font-size:12px; font-weight:800; letter-spacing:2px; cursor:pointer; border:1px solid; transition:all 0.2s; }
+  .perfect-card { background:rgba(255,215,0,0.05); border:1px solid rgba(255,215,0,0.2); border-radius:14px; padding:16px 20px; display:flex; align-items:center; gap:14px; }
+
+  /* BOSS BATTLES */
+  .boss-section { position:relative; z-index:1; padding:100px 24px; background:var(--bg2); }
+  .boss-inner { max-width:1100px; margin:0 auto; }
+  .boss-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:56px; }
+  .boss-card { background:#0a0a0a; border:1px solid var(--border); border-radius:18px; padding:22px; transition:all 0.35s; position:relative; overflow:hidden; cursor:pointer; }
+  .boss-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--boss-color); opacity:0.6; }
+  .boss-card:hover { transform:translateY(-6px); border-color:var(--boss-color); }
+  .boss-card-glow { position:absolute; inset:0; background:radial-gradient(circle at 50% 0%,var(--boss-glow) 0%,transparent 60%); opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .boss-card:hover .boss-card-glow { opacity:1; }
+  .boss-level-badge { display:inline-block; font-size:9px; font-weight:800; letter-spacing:1px; padding:4px 10px; border-radius:6px; margin-bottom:14px; }
+  .boss-icon-wrap { width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:14px; border:1px solid; }
+  .boss-name { font-size:15px; font-weight:800; color:#fff; margin-bottom:4px; }
+  .boss-desc { font-size:12px; color:var(--text2); line-height:1.5; margin-bottom:14px; }
+  .boss-reward { display:flex; align-items:center; gap:6px; margin-bottom:12px; }
+  .boss-reward-fp { font-size:14px; font-weight:800; }
+  .boss-reward-title { font-size:11px; color:var(--text3); }
+  .boss-progress-bar { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+  .boss-progress-fill { height:100%; border-radius:2px; }
+
+  /* DNA */
+  .dna-section { position:relative; z-index:1; padding:100px 24px; }
+  .dna-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .dna-card { background:#0d0d0d; border:1px solid rgba(224,48,48,0.25); border-radius:24px; padding:28px; position:relative; overflow:hidden; }
+  .dna-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--red); }
+  .dna-card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .dna-logo { font-size:13px; font-weight:900; color:var(--red); letter-spacing:3px; }
+  .dna-date { font-size:10px; color:var(--text3); }
+  .dna-hero { text-align:center; margin-bottom:20px; }
+  .dna-avatar { width:60px; height:60px; border-radius:18px; background:rgba(224,48,48,0.1); border:2px solid rgba(224,48,48,0.4); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 10px; }
+  .dna-name { font-size:20px; font-weight:800; color:#fff; }
+  .dna-rank { font-size:11px; font-weight:900; letter-spacing:3px; margin-top:3px; }
+  .dna-level { font-size:11px; color:var(--text3); margin-top:4px; }
+  .dna-stats { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin:14px 0; }
+  .dna-stat { text-align:center; min-width:50px; }
+  .dna-stat-val { font-size:18px; font-weight:800; }
+  .dna-stat-lbl { font-size:7px; color:var(--text3); letter-spacing:1px; }
+  .dna-overall { margin-top:14px; }
+  .dna-overall-row { display:flex; justify-content:space-between; margin-bottom:5px; }
+  .dna-overall-lbl { font-size:9px; color:var(--text3); letter-spacing:2px; }
+  .dna-overall-val { font-size:12px; font-weight:800; }
+  .dna-overall-bar { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+  .dna-overall-fill { height:100%; border-radius:2px; background:var(--red); animation:dna-fill 2s ease 1.5s both; }
+  @keyframes dna-fill{from{width:0!important;}}
+  .dna-footer { text-align:center; font-size:8px; color:var(--text3); letter-spacing:2px; margin-top:14px; }
+
+  /* LEADERBOARD */
+  .lb-section { position:relative; z-index:1; padding:100px 24px; background:var(--bg2); }
+  .lb-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  .lb-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:16px; }
+  .lb-tab { padding:12px 20px; font-size:13px; font-weight:600; color:var(--text3); cursor:pointer; transition:all 0.2s; border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .lb-tab.active { color:var(--red); border-bottom-color:var(--red); }
+  .lb-my-card { background:rgba(224,48,48,0.08); border:1px solid rgba(224,48,48,0.3); border-radius:14px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .lb-my-left { display:flex; align-items:center; gap:10px; }
+  .lb-my-avatar { width:44px; height:44px; border-radius:12px; background:rgba(224,48,48,0.15); border:1.5px solid var(--red); display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .lb-my-name { font-size:15px; font-weight:700; color:#fff; }
+  .lb-my-fp { font-size:12px; color:rgba(255,255,255,0.45); margin-top:1px; }
+  .lb-my-rank { background:var(--red); border-radius:10px; padding:8px 14px; font-size:16px; font-weight:800; color:#fff; }
+  .lb-card { background:#0a0a0a; border-radius:14px; overflow:hidden; }
+  .lb-row { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:0.5px solid rgba(255,255,255,0.04); transition:background 0.2s; }
+  .lb-row:hover { background:rgba(255,255,255,0.02); }
+  .lb-row:last-child { border-bottom:none; }
+  .lb-rank { font-size:14px; font-weight:700; width:24px; text-align:center; }
+  .lb-avatar { width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .lb-name { font-size:14px; font-weight:600; color:#fff; flex:1; }
+  .lb-badges { font-size:11px; color:var(--text3); }
+  .lb-fp { font-size:13px; font-weight:700; color:rgba(255,255,255,0.45); }
+
+  /* DEATH MODE */
+  .death-section { position:relative; z-index:1; padding:100px 24px; overflow:hidden; }
+  .death-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .death-bg-glow { position:absolute; top:50%; right:-200px; transform:translateY(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(224,0,0,0.07) 0%,transparent 70%); pointer-events:none; }
+  .death-modal { background:rgba(224,0,0,0.05); border:1px solid rgba(224,0,0,0.25); border-radius:20px; padding:32px; position:relative; overflow:hidden; }
+  .death-modal::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:#ff0000; box-shadow:0 0 20px rgba(255,0,0,0.8); }
+  .death-skull { font-size:56px; display:block; text-align:center; margin-bottom:16px; }
+  .death-title { font-size:26px; font-weight:900; color:#ff4444; text-align:center; letter-spacing:2px; margin-bottom:18px; }
+  .death-rule { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,0,0,0.08); }
+  .death-rule:last-of-type { border-bottom:none; }
+  .death-rule-icon { width:30px; height:30px; border-radius:8px; background:rgba(224,0,0,0.12); border:1px solid rgba(224,0,0,0.25); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .death-rule-txt { font-size:13px; color:rgba(255,255,255,0.65); line-height:1.5; padding-top:4px; }
+  .death-rule-txt strong { color:#ff4444; }
+  .death-btn-demo { width:100%; margin-top:20px; background:#ff0000; color:#fff; border:none; border-radius:12px; padding:15px; font-size:13px; font-weight:900; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
+  .death-btn-demo:hover { box-shadow:0 8px 32px rgba(255,0,0,0.5); transform:translateY(-2px); }
+
+  /* HOW IT WORKS */
+  .steps { display:flex; flex-direction:column; margin-top:56px; position:relative; }
+  .steps::before { content:''; position:absolute; left:27px; top:28px; bottom:28px; width:1px; background:linear-gradient(var(--red),transparent); }
+  .step { display:flex; gap:22px; padding:26px 0; opacity:0; transform:translateX(-20px); transition:all 0.6s ease; }
+  .step.visible { opacity:1; transform:translateX(0); }
+  .step-num { width:54px; height:54px; border-radius:50%; border:1px solid var(--border2); background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:var(--red); flex-shrink:0; z-index:1; }
+  .step-title { font-size:18px; font-weight:700; margin-bottom:5px; }
+  .step-desc { font-size:14px; color:var(--text2); line-height:1.6; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:56px; }
+  .testimonial { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:24px; transition:all 0.3s; }
+  .testimonial:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-3px); }
+  .testimonial-stars { color:var(--red); font-size:13px; margin-bottom:10px; letter-spacing:2px; }
+  .testimonial-txt { font-size:14px; color:var(--text2); line-height:1.7; margin-bottom:14px; font-style:italic; }
+  .testimonial-author { display:flex; align-items:center; gap:10px; }
+  .testimonial-avatar { width:36px; height:36px; border-radius:50%; background:var(--red-dim); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .testimonial-name { font-size:14px; font-weight:600; color:#fff; }
+  .testimonial-handle { font-size:12px; color:var(--text3); }
+
+  /* FINAL CTA SECTION */
+  .final-cta-section { position:relative; z-index:1; text-align:center; padding:120px 24px; overflow:hidden; }
+  .final-cta-glow { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:800px; height:400px; background:radial-gradient(ellipse,rgba(224,48,48,0.09) 0%,transparent 70%); pointer-events:none; }
+
+  /* FOOTER */
+  footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:40px 24px; text-align:center; }
+  .footer-logo { font-size:22px; font-weight:900; color:var(--red); letter-spacing:6px; margin-bottom:10px; }
+  .footer-tagline { font-size:11px; color:var(--text3); letter-spacing:2px; margin-bottom:22px; }
+  .footer-links { display:flex; gap:24px; justify-content:center; margin-bottom:22px; flex-wrap:wrap; }
+  .footer-links a { font-size:13px; color:var(--text3); text-decoration:none; transition:color 0.2s; }
+  .footer-links a:hover { color:#fff; }
+  .footer-copy { font-size:12px; color:var(--text3); }
+
+  /* ANIMATIONS */
+  @keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .reveal { opacity:0; transform:translateY(30px); transition:all 0.7s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .count-up { display:inline-block; }
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    nav{padding:16px 20px;}
+    .nav-links{display:none;}
+    .death-inner,.challenges-inner,.dna-inner,.lb-inner{grid-template-columns:1fr;gap:40px;}
+    .death-bg-glow{display:none;}
+    .phone-frame{width:240px;height:490px;}
+    .section{padding:60px 20px;}
+    .boss-grid{grid-template-columns:1fr 1fr;}
+    .hero-join-btn{padding:18px 40px;font-size:15px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     REPLACE THIS URL WITH YOUR TALLY LINK
+     e.g. https://tally.so/r/44OYXY
+     ═══════════════════════════════════════ -->
+<script>
+  async function joinWaitlist() {
+  const input = document.getElementById('hero-email');
+  const email = input.value.trim();
+
+  if (!email) {
+    alert('Please enter your email');
+    return;
+  }
+
+  try {
+    const res = await fetch('/.netlify/functions/addToBrevo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed');
+    }
+
+    alert('You are on the Forge waitlist ⚡');
+
+    input.value = '';
+
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong. Please try again.');
+  }
+}
+</script>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">⚡</div>
+    <span class="nav-logo-txt">FORGE</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#challenges">Challenges</a>
+    <a href="#bosses">Boss Battles</a>
+    <a href="#death">Death Mode</a>
+    <a href="#leaderboard">Leaderboard</a>
+  </div>
+  <button class="join-btn" onclick="openWaitlist()">JOIN WAITLIST</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    COMING TO ANDROID
+  </div>
+
+  <h1 class="hero-title">
+    You don't rise<br>by <span class="hero-title-red">motivation.</span>
+  </h1>
+
+  <p class="hero-sub">
+    FORGE is the productivity app with <strong>real consequences.</strong><br>
+    Track focus. Build habits. Earn Forge Points.<br>
+    Compete globally. Become unstoppable.
+  </p>
+
+  <div class="hero-cta-wrap">
+    <div class="hero-cta-wrap">
+  <input
+    id="hero-email"
+    type="email"
+    placeholder="Enter your email"
+    class="hero-email"
+  >
+
+  <button class="hero-join-btn" onclick="joinWaitlist()">
+    ⚡ JOIN THE WAITLIST
+  </button>
+
+  <p class="hero-cta-note">
+    FREE · NO SPAM · LAUNCH NOTIFICATION ONLY
+  </p>
+</div>
+    <p class="hero-cta-note">FREE · NO SPAM · LAUNCH NOTIFICATION ONLY</p>
+    <div class="waitlist-social">
+      <div class="waitlist-avatars">
+        <div class="waitlist-avatar">⚡</div>
+        <div class="waitlist-avatar">🔥</div>
+        <div class="waitlist-avatar">💀</div>
+        <div class="waitlist-avatar">👑</div>
+        <div class="waitlist-avatar">🦁</div>
+      </div>
+      <span class="waitlist-count-txt">Join <strong style="color:#fff">2,841</strong> others on the waitlist</span>
+    </div>
+  </div>
+
+  <!-- PHONE MOCKUP -->
+  <div class="app-preview">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div><div class="phone-greeting">Good morning,</div><div class="phone-name">Forger //</div></div>
+          <div class="phone-skull">💀</div>
+        </div>
+        <div class="phone-fp-card">
+          <div class="phone-fp-label">FORGE POINTS</div>
+          <div class="phone-fp-val">4,280 FP ⚡</div>
+          <div class="phone-fp-bar"><div class="phone-fp-fill"></div></div>
+        </div>
+        <div class="phone-streak">
+          <div class="phone-streak-left">
+            <div class="phone-fire">🔥</div>
+            <div><div class="phone-streak-num">23</div><div class="phone-streak-lbl">DAY STREAK</div></div>
+          </div>
+          <div class="phone-buy">BUY · 500 FP</div>
+        </div>
+        <div class="phone-row">
+          <div class="phone-mini"><div class="phone-mini-icon">⚔️</div><div class="phone-mini-lbl">CHALLENGES</div><div class="phone-mini-val">2/3</div></div>
+          <div class="phone-mini"><div class="phone-mini-icon">🧬</div><div class="phone-mini-lbl">FORGE DNA</div><div class="phone-mini-val" style="color:#ff8800">67</div></div>
+        </div>
+        <div class="phone-boss">
+          <div class="phone-boss-top">
+            <div class="phone-boss-left">
+              <span style="font-size:14px">⚙️</span>
+              <div><div class="phone-boss-lbl">BOSS BATTLE</div><div class="phone-boss-name">THE GRIND</div></div>
+            </div>
+            <div class="phone-boss-pct">45%</div>
+          </div>
+          <div class="phone-boss-bar"><div class="phone-boss-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">SCROLL<div class="scroll-line"></div></div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div><div class="stat-num"><span class="count-up" data-target="2841">0</span>+</div><div class="stat-lbl">On waitlist</div></div>
+    <div><div class="stat-num"><span class="count-up" data-target="12">0</span></div><div class="stat-lbl">Daily challenges</div></div>
+    <div><div class="stat-num"><span class="count-up" data-target="5">0</span></div><div class="stat-lbl">Boss battles</div></div>
+    <div><div class="stat-num"><span class="count-up" data-target="6">0</span></div><div class="stat-lbl">DNA axes tracked</div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div id="features" class="section">
+  <div class="reveal">
+    <div class="section-tag">WHAT'S INSIDE</div>
+    <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+    <p class="section-sub">FORGE is a complete system to build real discipline — not just track habits.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal" style="--card-color:#e03030;--card-bg:rgba(224,48,48,0.08);--card-border:rgba(224,48,48,0.2)"><div class="feature-icon">⏱</div><h3>Focus Timer</h3><p>Deep work sessions with a powerful timer. Earn Forge Points per minute. Race your ghost — your own previous best time.</p></div>
+    <div class="feature-card reveal" style="--card-color:#4488ff;--card-bg:rgba(68,136,255,0.08);--card-border:rgba(68,136,255,0.2)"><div class="feature-icon">✅</div><h3>Task System</h3><p>Daily, weekly, and monthly recurring tasks. Custom categories, completion tracking and FP rewards every time you finish.</p></div>
+    <div class="feature-card reveal" style="--card-color:#44cc66;--card-bg:rgba(68,204,102,0.08);--card-border:rgba(68,204,102,0.2)"><div class="feature-icon">📝</div><h3>Notes</h3><p>Capture ideas, journal entries and goals. Notes count toward your daily score and earn bonus FP — up to 5 per day.</p></div>
+    <div class="feature-card reveal" style="--card-color:#ff6644;--card-bg:rgba(255,102,68,0.08);--card-border:rgba(255,102,68,0.2)"><div class="feature-icon">🔥</div><h3>Streak System</h3><p>Build a daily streak by using FORGE every day. Buy Streak Insurance tokens to protect your streak if you miss a day.</p></div>
+    <div class="feature-card reveal" style="--card-color:#FFD700;--card-bg:rgba(255,215,0,0.08);--card-border:rgba(255,215,0,0.2)"><div class="feature-icon">⚡</div><h3>Forge Points</h3><p>Every action earns FP. Level up, unlock boss battles, and climb the global leaderboard. Your discipline has a real score.</p></div>
+    <div class="feature-card reveal" style="--card-color:#aa44ff;--card-bg:rgba(170,68,255,0.08);--card-border:rgba(170,68,255,0.2)"><div class="feature-icon">👻</div><h3>Ghost Records</h3><p>Every focus session is recorded. Next time you run the same duration, you race your ghost — your personal best from before.</p></div>
+  </div>
+</div>
+
+<!-- CHALLENGES -->
+<div id="challenges" class="challenges-section">
+  <div class="challenges-inner">
+    <div class="reveal">
+      <div class="section-tag">DAILY CHALLENGES</div>
+      <h2 class="section-title">3 new missions.<br>Every single day.</h2>
+      <p class="section-sub" style="margin-bottom:28px">Every midnight FORGE assigns 3 new challenges. Complete all 3 for the Perfect Day bonus.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;border-radius:10px;background:rgba(68,204,102,0.12);border:1px solid rgba(68,204,102,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✅</div><div><div style="font-size:14px;font-weight:600;color:#fff">Easy — 25 FP</div><div style="font-size:12px;color:var(--text2)">Quick wins to get started</div></div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;border-radius:10px;background:rgba(255,136,0,0.12);border:1px solid rgba(255,136,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">⚡</div><div><div style="font-size:14px;font-weight:600;color:#fff">Medium — 50 FP</div><div style="font-size:12px;color:var(--text2)">Solid effort required</div></div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;border-radius:10px;background:rgba(224,48,48,0.12);border:1px solid rgba(224,48,48,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">💀</div><div><div style="font-size:14px;font-weight:600;color:#fff">Hard — 100 FP</div><div style="font-size:12px;color:var(--text2)">Maximum grind</div></div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;border-radius:10px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">👑</div><div><div style="font-size:14px;font-weight:600;color:#FFD700">Perfect Day — +75 FP bonus</div><div style="font-size:12px;color:var(--text2)">Complete all 3 in one day</div></div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="challenge-card">
+        <div class="challenge-top"><span class="diff-badge" style="color:#44cc66;border-color:rgba(68,204,102,0.4);background:rgba(68,204,102,0.1)">EASY</span><span class="fp-badge" style="color:#e03030;background:rgba(224,48,48,0.1)">+25 FP</span></div>
+        <div class="challenge-body"><span style="font-size:24px">⏱</span><div><div class="challenge-title">25 min focus session</div><div class="challenge-desc">Complete at least one focus session</div></div></div>
+        <div class="challenge-bar-wrap"><div class="challenge-bar-fill" style="width:100%;background:#44cc66"></div></div>
+        <div class="challenge-status" style="color:#44cc66">Complete!</div>
+        <button class="claim-btn" style="color:#44cc66;border-color:#44cc66;background:rgba(68,204,102,0.1)">CLAIM +25 FP ⚡</button>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-top"><span class="diff-badge" style="color:#ff8800;border-color:rgba(255,136,0,0.4);background:rgba(255,136,0,0.1)">MEDIUM</span><span class="fp-badge" style="color:#e03030;background:rgba(224,48,48,0.1)">+50 FP</span></div>
+        <div class="challenge-body"><span style="font-size:24px">🔥</span><div><div class="challenge-title">60 min total focus</div><div class="challenge-desc">Log 60 minutes of focus today</div></div></div>
+        <div class="challenge-bar-wrap"><div class="challenge-bar-fill" style="width:42%;background:#ff8800"></div></div>
+        <div class="challenge-status" style="color:rgba(255,255,255,0.35)">25 min focused</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-top"><span class="diff-badge" style="color:#e03030;border-color:rgba(224,48,48,0.4);background:rgba(224,48,48,0.1)">HARD</span><span class="fp-badge" style="color:#e03030;background:rgba(224,48,48,0.1)">+100 FP</span></div>
+        <div class="challenge-body"><span style="font-size:24px">👑</span><div><div class="challenge-title">The Grind</div><div class="challenge-desc">5 tasks + 90 min focus in one day</div></div></div>
+        <div class="challenge-bar-wrap"><div class="challenge-bar-fill" style="width:18%;background:#e03030"></div></div>
+        <div class="challenge-status" style="color:rgba(255,255,255,0.35)">In progress...</div>
+      </div>
+      <div class="perfect-card">
+        <div style="font-size:28px">👑</div>
+        <div><div style="font-size:13px;font-weight:800;color:#FFD700;margin-bottom:2px">PERFECT DAY BONUS</div><div style="font-size:12px;color:rgba(255,215,0,0.5)">Complete all 3 to earn +75 FP extra</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOSS BATTLES -->
+<div id="bosses" class="boss-section">
+  <div class="boss-inner">
+    <div class="reveal">
+      <div class="section-tag">BOSS BATTLES</div>
+      <h2 class="section-title">Defeat the bosses.<br>Earn the <span style="color:var(--red)">titles.</span></h2>
+      <p class="section-sub">Reach the required level to unlock a Boss. Complete the mega challenge. Claim your massive FP reward and exclusive title.</p>
+    </div>
+    <div class="boss-grid">
+      <div class="boss-card reveal" style="--boss-color:#ff8800;--boss-glow:rgba(255,136,0,0.06)"><div class="boss-card-glow"></div><div class="boss-level-badge" style="color:#ff8800;background:rgba(255,136,0,0.1);border:1px solid rgba(255,136,0,0.3)">LEVEL 10</div><div class="boss-icon-wrap" style="background:rgba(255,136,0,0.08);border-color:rgba(255,136,0,0.25)">⚙️</div><div class="boss-name">THE GRIND</div><div class="boss-desc">300 focus minutes in 7 days</div><div class="boss-reward"><span style="font-size:14px">⚙️</span><span class="boss-reward-fp" style="color:#ff8800">+1,000 FP</span><span class="boss-reward-title">· "THE GRINDER"</span></div><div class="boss-progress-bar"><div class="boss-progress-fill" style="width:45%;background:#ff8800"></div></div></div>
+      <div class="boss-card reveal" style="--boss-color:#4488ff;--boss-glow:rgba(68,136,255,0.06)"><div class="boss-card-glow"></div><div class="boss-level-badge" style="color:#4488ff;background:rgba(68,136,255,0.1);border:1px solid rgba(68,136,255,0.3)">LEVEL 20</div><div class="boss-icon-wrap" style="background:rgba(68,136,255,0.08);border-color:rgba(68,136,255,0.25)">🤖</div><div class="boss-name">THE MACHINE</div><div class="boss-desc">40 tasks completed in 7 days</div><div class="boss-reward"><span style="font-size:14px">🤖</span><span class="boss-reward-fp" style="color:#4488ff">+2,000 FP</span><span class="boss-reward-title">· "THE MACHINE"</span></div><div class="boss-progress-bar"><div class="boss-progress-fill" style="width:0%;background:#4488ff"></div></div></div>
+      <div class="boss-card reveal" style="--boss-color:#aa44ff;--boss-glow:rgba(170,68,255,0.06)"><div class="boss-card-glow"></div><div class="boss-level-badge" style="color:#aa44ff;background:rgba(170,68,255,0.1);border:1px solid rgba(170,68,255,0.3)">LEVEL 30</div><div class="boss-icon-wrap" style="background:rgba(170,68,255,0.08);border-color:rgba(170,68,255,0.25)">🧘</div><div class="boss-name">THE MONK</div><div class="boss-desc">7-day perfect streak</div><div class="boss-reward"><span style="font-size:14px">🧘</span><span class="boss-reward-fp" style="color:#aa44ff">+3,000 FP</span><span class="boss-reward-title">· "THE MONK"</span></div><div class="boss-progress-bar"><div class="boss-progress-fill" style="width:0%;background:#aa44ff"></div></div></div>
+      <div class="boss-card reveal" style="--boss-color:#FFD700;--boss-glow:rgba(255,215,0,0.06)"><div class="boss-card-glow"></div><div class="boss-level-badge" style="color:#FFD700;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3)">LEVEL 40</div><div class="boss-icon-wrap" style="background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.25)">👑</div><div class="boss-name">THE LEGEND</div><div class="boss-desc">500 min + 60 tasks in 7 days</div><div class="boss-reward"><span style="font-size:14px">👑</span><span class="boss-reward-fp" style="color:#FFD700">+5,000 FP</span><span class="boss-reward-title">· "THE LEGEND"</span></div><div class="boss-progress-bar"><div class="boss-progress-fill" style="width:0%;background:#FFD700"></div></div></div>
+      <div class="boss-card reveal" style="--boss-color:#e03030;--boss-glow:rgba(224,48,48,0.06)"><div class="boss-card-glow"></div><div class="boss-level-badge" style="color:#e03030;background:rgba(224,48,48,0.1);border:1px solid rgba(224,48,48,0.3)">LEVEL 50</div><div class="boss-icon-wrap" style="background:rgba(224,48,48,0.08);border-color:rgba(224,48,48,0.25)">💀</div><div class="boss-name">THE IMMORTAL</div><div class="boss-desc">30-day streak + 1000 min</div><div class="boss-reward"><span style="font-size:14px">💀</span><span class="boss-reward-fp" style="color:#e03030">+10,000 FP</span><span class="boss-reward-title">· "THE IMMORTAL"</span></div><div class="boss-progress-bar"><div class="boss-progress-fill" style="width:0%;background:#e03030"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DNA -->
+<div class="dna-section">
+  <div class="dna-inner">
+    <div class="reveal">
+      <div class="section-tag">FORGE DNA</div>
+      <h2 class="section-title">Your performance<br><span style="color:var(--red)">fingerprint.</span></h2>
+      <p class="section-sub" style="margin-bottom:28px">FORGE tracks 6 axes of your performance over the last 30 days and generates your unique DNA card. Share it anywhere.</p>
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:var(--text2)">🎯 FOCUS</span><span style="font-size:13px;font-weight:700;color:#e03030">Focus time logged</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:var(--text2)">⚡ DISCIPLINE</span><span style="font-size:13px;font-weight:700;color:#ff8800">Tasks completed</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:var(--text2)">📅 CONSISTENCY</span><span style="font-size:13px;font-weight:700;color:#4488ff">Active days / 30</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:var(--text2)">📊 OUTPUT</span><span style="font-size:13px;font-weight:700;color:#44cc66">Tasks + notes combined</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:var(--text2)">🧠 MINDSET</span><span style="font-size:13px;font-weight:700;color:#aa44ff">Notes written</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="font-size:13px;color:var(--text2)">🔥 STREAK</span><span style="font-size:13px;font-weight:700;color:#FFD700">Current streak length</span></div>
+      </div>
+    </div>
+    <div class="dna-card reveal">
+      <div class="dna-card-top"><span class="dna-logo">⚡ FORGE</span><span class="dna-date">Jun 2025</span></div>
+      <div class="dna-hero">
+        <div class="dna-avatar">🦁</div>
+        <div class="dna-name">Marcus T.</div>
+        <div class="dna-rank" style="color:#e03030">THE WARRIOR</div>
+        <div class="dna-level">Level 18 · 12,480 FP ⚡</div>
+      </div>
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:220px;display:block;margin:0 auto">
+        <g transform="translate(110,110)">
+          <polygon points="0,-80 69,-40 69,40 0,80 -69,40 -69,-40" fill="none" stroke="rgba(224,48,48,0.08)" stroke-width="1"/>
+          <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" fill="none" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" fill="none" stroke="rgba(224,48,48,0.12)" stroke-width="1"/>
+          <polygon points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10" fill="none" stroke="rgba(224,48,48,0.15)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="0" y2="-80" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="69" y2="-40" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="69" y2="40" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="0" y2="80" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="-69" y2="40" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <line x1="0" y1="0" x2="-69" y2="-40" stroke="rgba(224,48,48,0.1)" stroke-width="1"/>
+          <polygon points="0,-57.6 43.5,-29 44.9,26 0,52 -40,-18 -52.4,-30.4" fill="rgba(224,48,48,0.18)" stroke="#e03030" stroke-width="2"/>
+          <circle cx="0" cy="-57.6" r="4" fill="#e03030"/><circle cx="43.5" cy="-29" r="4" fill="#e03030"/>
+          <circle cx="44.9" cy="26" r="4" fill="#e03030"/><circle cx="0" cy="52" r="4" fill="#e03030"/>
+          <circle cx="-40" cy="-18" r="4" fill="#e03030"/><circle cx="-52.4" cy="-30.4" r="4" fill="#e03030"/>
+          <text x="0" y="-90" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7.5" font-weight="700">FOCUS</text>
+          <text x="84" y="-38" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7.5" font-weight="700">DISCIPLINE</text>
+          <text x="84" y="48" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7.5" font-weight="700">CONSISTENCY</text>
+          <text x="0" y="98" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7.5" font-weight="700">OUTPUT</text>
+          <text x="-84" y="48" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7.5" font-weight="700">MINDSET</text>
+          <text x="-84" y="-38" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="7.5" font-weight="700">STREAK</text>
+        </g>
+      </svg>
+      <div class="dna-stats">
+        <div class="dna-stat"><div class="dna-stat-val" style="color:#e03030">72</div><div class="dna-stat-lbl">FOCUS</div></div>
+        <div class="dna-stat"><div class="dna-stat-val" style="color:#ff8800">58</div><div class="dna-stat-lbl">DISCIPLINE</div></div>
+        <div class="dna-stat"><div class="dna-stat-val" style="color:#4488ff">80</div><div class="dna-stat-lbl">CONSISTENCY</div></div>
+        <div class="dna-stat"><div class="dna-stat-val" style="color:#44cc66">65</div><div class="dna-stat-lbl">OUTPUT</div></div>
+        <div class="dna-stat"><div class="dna-stat-val" style="color:#aa44ff">45</div><div class="dna-stat-lbl">MINDSET</div></div>
+        <div class="dna-stat"><div class="dna-stat-val" style="color:#FFD700">76</div><div class="dna-stat-lbl">STREAK</div></div>
+      </div>
+      <div class="dna-overall">
+        <div class="dna-overall-row"><span class="dna-overall-lbl">OVERALL DNA SCORE</span><span class="dna-overall-val" style="color:#e03030">66/100</span></div>
+        <div class="dna-overall-bar"><div class="dna-overall-fill" style="width:66%"></div></div>
+      </div>
+      <div class="dna-footer">FORGE · DISCIPLINE. FOCUS. FREEDOM.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="leaderboard" class="lb-section">
+  <div class="lb-inner">
+    <div class="reveal">
+      <div class="section-tag">GLOBAL LEADERBOARD</div>
+      <h2 class="section-title">Compete.<br>Get better.<br><span style="color:var(--red)">Dominate.</span></h2>
+      <p class="section-sub" style="margin-bottom:28px">Every FP you earn pushes you higher. Weekly, monthly, and all-time rankings. Death Mode users get a 💀 badge. The grind is public.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🥇</span><div><div style="font-size:14px;font-weight:600;color:#FFD700">Weekly ranking</div><div style="font-size:12px;color:var(--text2)">Resets every Monday — fresh chance every week</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🏆</span><div><div style="font-size:14px;font-weight:600;color:#fff">All time ranking</div><div style="font-size:12px;color:var(--text2)">Your lifetime discipline score — permanent legacy</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">💀</span><div><div style="font-size:14px;font-weight:600;color:#ff4444">Death Mode badge</div><div style="font-size:12px;color:var(--text2)">Visible to everyone — a mark of the truly committed</div></div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="lb-tabs">
+        <div class="lb-tab active">Weekly</div>
+        <div class="lb-tab">Monthly</div>
+        <div class="lb-tab">All time</div>
+      </div>
+      <div class="lb-my-card">
+        <div class="lb-my-left">
+          <div class="lb-my-avatar">⚡</div>
+          <div><div style="display:flex;align-items:center;gap:6px"><span class="lb-my-name">You</span><span style="font-size:11px;color:#e03030;background:rgba(224,48,48,0.15);padding:2px 7px;border-radius:5px">Lv.12</span></div><div class="lb-my-fp">4,280 FP ⚡</div></div>
+        </div>
+        <div class="lb-my-rank">#14</div>
+      </div>
+      <div class="lb-card">
+        <div class="lb-row"><span class="lb-rank" style="color:#FFD700">1</span><div class="lb-avatar">👑</div><span class="lb-name">TheGrinder</span><div class="lb-badges">🔥47 💀</div><span class="lb-fp">28,440 FP</span></div>
+        <div class="lb-row"><span class="lb-rank" style="color:#C0C0C0">2</span><div class="lb-avatar">🦁</div><span class="lb-name">Marcus T.</span><div class="lb-badges">🔥23</div><span class="lb-fp">21,180 FP</span></div>
+        <div class="lb-row"><span class="lb-rank" style="color:#CD7F32">3</span><div class="lb-avatar">🔥</div><span class="lb-name">Sofia R.</span><div class="lb-badges">💀</div><span class="lb-fp">19,640 FP</span></div>
+        <div class="lb-row"><span class="lb-rank" style="color:rgba(255,255,255,0.35)">4</span><div class="lb-avatar">🧠</div><span class="lb-name">DisciplineKing</span><div class="lb-badges">🔥15</div><span class="lb-fp">16,200 FP</span></div>
+        <div class="lb-row"><span class="lb-rank" style="color:rgba(255,255,255,0.35)">5</span><div class="lb-avatar">⚔️</div><span class="lb-name">IronMind</span><div class="lb-badges">💀 🔥9</div><span class="lb-fp">14,890 FP</span></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.04);padding:10px 16px;text-align:center"><span style="font-size:18px;color:rgba(255,255,255,0.15);letter-spacing:6px">· · ·</span></div>
+        <div class="lb-row" style="background:rgba(224,48,48,0.06)"><span class="lb-rank" style="color:#e03030">14</span><div class="lb-avatar" style="border-color:#e03030">⚡</div><span class="lb-name" style="color:#e03030">You</span><div class="lb-badges"></div><span class="lb-fp" style="color:#e03030">4,280 FP</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DEATH MODE -->
+<div id="death" class="death-section">
+  <div class="death-bg-glow"></div>
+  <div class="death-inner">
+    <div class="reveal">
+      <div class="section-tag">THE DIFFERENTIATOR</div>
+      <h2 class="section-title">Consequences<br>are <span style="color:#ff4444">real.</span></h2>
+      <p class="section-sub" style="margin-bottom:28px">Every other app lets you fail with zero consequences. FORGE doesn't. Death Mode changes everything.</p>
+      <p style="font-size:14px;color:var(--text3);line-height:1.8">"Miss 2 consecutive days and you lose 25% of all your Forge Points. Your streak resets to zero. There's no undo. No excuses."</p>
+      <br>
+      <p style="font-size:14px;color:var(--text2);font-style:italic">"The only app I was actually scared to ignore."</p>
+    </div>
+    <div class="death-modal reveal">
+      <span class="death-skull">💀</span>
+      <div class="death-title">DEATH MODE</div>
+      <div class="death-rule"><div class="death-rule-icon">💀</div><div class="death-rule-txt">Miss <strong>2 consecutive days</strong> → lose <strong>25% of all your FP</strong></div></div>
+      <div class="death-rule"><div class="death-rule-icon">🔥</div><div class="death-rule-txt">Your <strong>streak resets to 0</strong> — all progress erased instantly</div></div>
+      <div class="death-rule"><div class="death-rule-icon">🛡</div><div class="death-rule-txt">Streak Insurance saves you <strong>once</strong> — but costs 500 FP</div></div>
+      <div class="death-rule"><div class="death-rule-icon">💸</div><div class="death-rule-txt">Deactivating costs <strong>1,000 FP</strong> — escaping is expensive</div></div>
+      <div class="death-rule"><div class="death-rule-icon">💀</div><div class="death-rule-txt">A <strong>skull badge</strong> appears on your leaderboard profile forever</div></div>
+      <button class="death-btn-demo" id="death-btn" onclick="deathClick()">💀 ONLY THE DISCIPLINED SURVIVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+  <div class="reveal">
+    <div class="section-tag">HOW IT WORKS</div>
+    <h2 class="section-title">Four steps.<br>One life change.</h2>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Open FORGE every morning</div><div class="step-desc">Your daily missions are waiting. Focus sessions, tasks, notes — all ready. The streak clock is ticking.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Focus and complete challenges</div><div class="step-desc">Every minute focused, every task done, every note written earns FP. 3 daily challenges rotate at midnight.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Level up and take on bosses</div><div class="step-desc">FP earns levels. Levels unlock Boss Battles. Your DNA radar fills. Your leaderboard rank rises.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div><div class="step-title">Never stop — or face Death Mode</div><div class="step-desc">The streak is sacred. Insurance tokens can save you once. But Death Mode forgives nothing.</div></div></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="section" style="padding-top:0">
+  <div class="reveal">
+    <div class="section-tag">EARLY TESTERS</div>
+    <h2 class="section-title">People who showed up.</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial reveal"><div class="testimonial-stars">★★★★★</div><div class="testimonial-txt">"I've tried every productivity app. FORGE is the only one I was genuinely scared to miss a day on. That fear is exactly what I needed."</div><div class="testimonial-author"><div class="testimonial-avatar">🦁</div><div><div class="testimonial-name">Marcus T.</div><div class="testimonial-handle">47-day streak · Level 18</div></div></div></div>
+    <div class="testimonial reveal"><div class="testimonial-stars">★★★★★</div><div class="testimonial-txt">"The Death Mode badge on my leaderboard profile hits different. It's a status symbol. I activated it week 1 and never looked back."</div><div class="testimonial-author"><div class="testimonial-avatar">🔥</div><div><div class="testimonial-name">Sofia R.</div><div class="testimonial-handle">Death Mode active · 💀</div></div></div></div>
+    <div class="testimonial reveal"><div class="testimonial-stars">★★★★★</div><div class="testimonial-txt">"My Forge DNA radar went from empty to almost full in 30 days. Watching those 6 bars fill up is wildly motivating."</div><div class="testimonial-author"><div class="testimonial-avatar">👑</div><div><div class="testimonial-name">James W.</div><div class="testimonial-handle">Level 22 · THE WARRIOR</div></div></div></div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-cta-section">
+  <div class="final-cta-glow"></div>
+  <div style="position:relative;z-index:1" class="reveal">
+    <div class="section-tag" style="display:block;margin-bottom:20px">JOIN THE WAITLIST</div>
+    <h2 style="font-size:clamp(36px,6vw,76px);font-weight:900;line-height:1.0;letter-spacing:-2px;margin-bottom:18px">
+      Ready to<br><span style="color:var(--red)">FORGE</span> yourself?
+    </h2>
+    <p style="font-size:17px;color:var(--text2);margin-bottom:48px;font-weight:300">
+      Be first when we launch on Android. Free forever.
+    </p>
+    <button class="hero-join-btn" onclick="openWaitlist()">⚡ JOIN THE WAITLIST</button>
+    <p style="font-size:12px;color:var(--text3);margin-top:16px">Free. No spam. Launch notification only.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FORGE</div>
+  <div class="footer-tagline">DISCIPLINE. FOCUS. FREEDOM.</div>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#challenges">Challenges</a>
+    <a href="#bosses">Boss Battles</a>
+    <a href="#death">Death Mode</a>
+    <a href="#leaderboard">Leaderboard</a>
+  </div>
+  <div class="footer-copy">© 2025 FORGE. All rights reserved. · Coming to Android.</div>
+</footer>
+
+<script>
+  // SCROLL REVEAL
+  const obs = new IntersectionObserver(e => {
+    e.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal, .step').forEach(el => obs.observe(el));
+
+  // COUNTER ANIMATION
+  function animCount(el) {
+    const target = parseInt(el.dataset.target);
+    const dur = 2000; const start = Date.now();
+    const t = setInterval(() => {
+      const p = Math.min((Date.now() - start) / dur, 1);
+      el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * target).toLocaleString();
+      if (p >= 1) clearInterval(t);
+    }, 16);
+  }
+  const cObs = new IntersectionObserver(e => {
+    e.forEach(en => { if (en.isIntersecting) { animCount(en.target); cObs.unobserve(en.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.count-up').forEach(el => cObs.observe(el));
+
+  // NAV SHRINK
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').style.padding = window.scrollY > 50 ? '12px 40px' : '20px 40px';
+  });
+
+  // LEADERBOARD TABS
+  document.querySelectorAll('.lb-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // DEATH MODE BUTTON
+  function deathClick() {
+    const btn = document.getElementById('death-btn');
+    btn.textContent = '💀 ACTIVATED — NO TURNING BACK';
+    btn.style.background = '#330000';
+    btn.style.boxShadow = '0 0 40px rgba(255,0,0,0.6)';
+    setTimeout(() => {
+      btn.textContent = '💀 ONLY THE DISCIPLINED SURVIVE';
+      btn.style.background = '#ff0000';
+      btn.style.boxShadow = '';
+    }, 2500);
+  }
+</script>
+</body>
+</html>
