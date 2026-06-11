@@ -894,10 +894,10 @@
       // Show beautiful success overlay
       showSuccess(email);
 
-    } catch (err) {
-      // Even on error show success — Brevo may have saved it
-      showSuccess(email);
-    }
+catch (err) {
+  console.error(err);
+  alert('Something went wrong. Please try again.');
+}
   }
 
   function showSuccess(email) {
