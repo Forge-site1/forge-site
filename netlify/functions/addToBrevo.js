@@ -18,9 +18,6 @@ exports.handler = async (event) => {
 
 const data = await response.text();
 
-console.log("BREVO STATUS:", response.status);
-console.log("BREVO RESPONSE:", data);
-
 return {
   statusCode: response.status,
   body: data
