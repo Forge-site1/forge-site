@@ -862,53 +862,56 @@
   }
 
   // ── WAITLIST SUBMIT ──
-  async function joinWaitlist() {
-    const input = document.getElementById('hero-email');
-    const btn   = document.getElementById('join-btn');
-    const email = input.value.trim();
+async function joinWaitlist() {
+  const input = document.getElementById('hero-email');
+  const btn   = document.getElementById('join-btn');
+  const email = input.value.trim();
 
-    // Validate
-    if (!email || !email.includes('@') || !email.includes('.')) {
-      input.classList.add('error');
-      input.placeholder = 'Please enter a valid email...';
-      setTimeout(() => {
-        input.classList.remove('error');
-        input.placeholder = 'Enter your email address...';
-      }, 2500);
-      return;
-    }
-
-    // Loading state
-    btn.textContent = '...';
-    btn.disabled = true;
-
-    try {
-      const res = await fetch('/.netlify/functions/addToBrevo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      if (!res.ok) throw new Error('Failed');
-
-      // Show beautiful success overlay
-      showSuccess(email);
-
-    } catch (err) {
-  console.error(err);
-  alert('Something went wrong. Please try again.');
-}
+  // Validate
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    input.classList.add('error');
+    input.placeholder = 'Please enter a valid email...';
+    setTimeout(() => {
+      input.classList.remove('error');
+      input.placeholder = 'Enter your email address...';
+    }, 2500);
+    return;
   }
 
-  function showSuccess(email) {
-    document.getElementById('success-email-display').textContent = email;
-    document.getElementById('success-overlay').classList.add('show');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('hero-email').value = '';
-    const btn = document.getElementById('join-btn');
+  // Loading state
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/addToBrevo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (!res.ok) throw new Error('Failed');
+
+    showSuccess(email);
+
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong. Please try again.');
+
     btn.textContent = '⚡ JOIN THE WAITLIST';
     btn.disabled = false;
   }
+} // <-- THIS BRACE MUST EXIST
+
+function showSuccess(email) {
+  document.getElementById('success-email-display').textContent = email;
+  document.getElementById('success-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('hero-email').value = '';
+
+  const btn = document.getElementById('join-btn');
+  btn.textContent = '⚡ JOIN THE WAITLIST';
+  btn.disabled = false;
+}
 
   function goBack() {
     document.getElementById('success-overlay').classList.remove('show');
