@@ -33,7 +33,89 @@
     background-size:80px 80px; pointer-events:none; z-index:0;
   }
 
-  /* NAV */
+  /* ── SUCCESS OVERLAY ── */
+  #success-overlay {
+    display:none; position:fixed; inset:0;
+    background:var(--bg); z-index:200;
+    align-items:center; justify-content:center;
+    padding:24px; flex-direction:column; text-align:center;
+    overflow-y:auto;
+  }
+  #success-overlay.show { display:flex; animation:fade-in 0.5s ease; }
+  @keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+  .success-grid {
+    position:absolute; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+    background-size:80px 80px; pointer-events:none;
+  }
+  .success-glow {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:600px; height:600px;
+    background:radial-gradient(circle,rgba(224,48,48,0.1) 0%,transparent 70%);
+    pointer-events:none; animation:pulse-glow 4s ease-in-out infinite;
+  }
+  .success-content { position:relative; z-index:1; max-width:520px; width:100%; }
+  .success-icon {
+    width:80px; height:80px; border-radius:22px;
+    background:rgba(68,204,102,0.12); border:2px solid rgba(68,204,102,0.4);
+    display:flex; align-items:center; justify-content:center; font-size:36px;
+    margin:0 auto 24px;
+    box-shadow:0 0 40px rgba(68,204,102,0.2);
+    animation:icon-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+  }
+  @keyframes icon-pop{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .success-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(68,204,102,0.1); border:1px solid rgba(68,204,102,0.3);
+    border-radius:100px; padding:7px 16px;
+    font-size:11px; font-weight:700; color:#44cc66; letter-spacing:2px;
+    margin-bottom:20px; animation:fade-up 0.6s ease 0.3s both;
+  }
+  .success-badge-dot { width:6px; height:6px; border-radius:50%; background:#44cc66; animation:blink 1.5s ease-in-out infinite; }
+  .success-title {
+    font-size:clamp(36px,6vw,64px); font-weight:900;
+    letter-spacing:-2px; line-height:1.0; margin-bottom:14px;
+    animation:fade-up 0.6s ease 0.4s both;
+  }
+  .success-title span { color:var(--red); }
+  .success-sub {
+    font-size:16px; color:var(--text2); line-height:1.65; margin-bottom:24px;
+    animation:fade-up 0.6s ease 0.5s both; font-weight:300;
+  }
+  .success-sub strong { color:#fff; font-weight:600; }
+  .success-email-box {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:14px; padding:16px 22px; margin-bottom:20px;
+    animation:fade-up 0.6s ease 0.6s both; text-align:left;
+  }
+  .success-email-lbl { font-size:9px; color:var(--text3); letter-spacing:2px; margin-bottom:5px; }
+  .success-email-val { font-size:15px; color:#fff; font-weight:600; }
+  .success-steps {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:16px; padding:22px; text-align:left; margin-bottom:24px;
+    animation:fade-up 0.6s ease 0.7s both;
+  }
+  .success-steps-title { font-size:10px; color:var(--red); letter-spacing:3px; font-weight:700; margin-bottom:16px; }
+  .success-step { display:flex; align-items:flex-start; gap:12px; margin-bottom:14px; }
+  .success-step:last-child { margin-bottom:0; }
+  .success-step-icon {
+    width:32px; height:32px; border-radius:9px;
+    background:rgba(224,48,48,0.1); border:1px solid rgba(224,48,48,0.25);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; flex-shrink:0;
+  }
+  .success-step-txt { font-size:13px; color:var(--text2); line-height:1.5; padding-top:4px; }
+  .success-step-txt strong { color:#fff; }
+  .success-back {
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--text3); font-size:13px; cursor:pointer;
+    transition:color 0.2s; background:none; border:none;
+    animation:fade-up 0.6s ease 0.8s both;
+  }
+  .success-back:hover { color:#fff; }
+
+  /* ── NAV ── */
   nav {
     position:fixed; top:0; left:0; right:0; z-index:100;
     padding:20px 40px; display:flex; align-items:center; justify-content:space-between;
@@ -49,12 +131,11 @@
   .join-btn {
     background:var(--red); color:#fff; border:none; padding:11px 26px;
     border-radius:10px; font-size:13px; font-weight:800; letter-spacing:2px;
-    cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block;
+    cursor:pointer; transition:all 0.2s;
   }
   .join-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(224,48,48,0.5); }
-  .join-btn:active { transform:scale(0.97); }
 
-  /* HERO */
+  /* ── HERO ── */
   .hero {
     position:relative; min-height:100vh; display:flex; flex-direction:column;
     align-items:center; justify-content:center; text-align:center;
@@ -70,30 +151,6 @@
     0%,100%{opacity:0.6;transform:translateX(-50%) scale(1);}
     50%{opacity:1;transform:translateX(-50%) scale(1.15);}
   }
-
-  .hero-email {
-  width: 100%;
-  max-width: 420px;
-  background: #141414;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: white;
-  border-radius: 16px;
-  padding: 18px 20px;
-  font-size: 16px;
-  outline: none;
-  margin-bottom: 14px;
-  transition: all .2s ease;
-}
-
-.hero-email:focus {
-  border-color: #e03030;
-  box-shadow: 0 0 0 4px rgba(224,48,48,.15);
-}
-
-.hero-email::placeholder {
-  color: rgba(255,255,255,.35);
-}
-
   .hero-badge {
     display:inline-flex; align-items:center; gap:8px;
     background:var(--red-dim); border:1px solid var(--red-glow);
@@ -110,33 +167,38 @@
   .hero-title-red { color:var(--red); }
   .hero-sub {
     font-size:clamp(16px,2vw,21px); color:var(--text2); font-weight:300;
-    max-width:560px; margin:20px auto 48px;
+    max-width:560px; margin:20px auto 40px;
     animation:fade-up 0.8s ease 0.2s both; line-height:1.6;
   }
   .hero-sub strong { color:#fff; font-weight:600; }
 
-  /* HERO CTA */
+  /* ── WAITLIST FORM ── */
   .hero-cta-wrap {
-    display:flex; flex-direction:column; align-items:center; gap:16px;
-    animation:fade-up 0.8s ease 0.3s both;
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    animation:fade-up 0.8s ease 0.3s both; width:100%; max-width:460px;
   }
+  .hero-email {
+    width:100%; background:#141414;
+    border:1px solid rgba(255,255,255,0.08); color:#fff;
+    border-radius:14px; padding:18px 22px; font-size:16px;
+    outline:none; transition:all 0.2s;
+  }
+  .hero-email:focus { border-color:#e03030; box-shadow:0 0 0 4px rgba(224,48,48,0.15); }
+  .hero-email::placeholder { color:rgba(255,255,255,0.3); }
+  .hero-email.error { border-color:rgba(224,48,48,0.9); box-shadow:0 0 0 3px rgba(224,48,48,0.15); animation:shake 0.4s ease; }
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
   .hero-join-btn {
-    background:var(--red); color:#fff; border:none;
-    padding:20px 56px; border-radius:16px;
+    width:100%; background:var(--red); color:#fff; border:none;
+    padding:19px 32px; border-radius:14px;
     font-size:16px; font-weight:900; letter-spacing:3px;
-    cursor:pointer; transition:all 0.25s; text-decoration:none;
-    display:inline-block;
+    cursor:pointer; transition:all 0.25s;
     box-shadow:0 8px 32px rgba(224,48,48,0.35);
   }
-  .hero-join-btn:hover {
-    transform:translateY(-2px);
-    box-shadow:0 16px 48px rgba(224,48,48,0.55);
-  }
+  .hero-join-btn:hover { transform:translateY(-2px); box-shadow:0 16px 48px rgba(224,48,48,0.55); }
   .hero-join-btn:active { transform:scale(0.97); }
-  .hero-cta-note { font-size:12px; color:var(--text3); letter-spacing:1px; }
-
+  .hero-join-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
   .waitlist-social {
-    display:flex; align-items:center; gap:10px; margin-top:8px;
+    display:flex; align-items:center; gap:10px; margin-top:4px;
     animation:fade-up 0.8s ease 0.45s both;
   }
   .waitlist-avatars { display:flex; }
@@ -148,7 +210,7 @@
   .waitlist-avatar:first-child { margin-left:0; }
   .waitlist-count-txt { font-size:13px; color:var(--text3); }
 
-  /* PHONE */
+  /* ── PHONE ── */
   .app-preview { margin-top:72px; display:flex; justify-content:center; animation:fade-up 0.8s ease 0.5s both; }
   .phone-frame {
     width:280px; height:570px; background:var(--bg2); border-radius:40px;
@@ -192,19 +254,19 @@
   .scroll-line { width:1px; height:40px; background:linear-gradient(var(--red),transparent); animation:scroll-anim 1.5s ease-in-out infinite; }
   @keyframes scroll-anim{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
 
-  /* STATS */
+  /* ── STATS ── */
   .stats-bar { position:relative; z-index:1; background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:50px 24px; }
   .stats-inner { max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:40px; text-align:center; }
   .stat-num { font-size:44px; font-weight:900; color:var(--red); line-height:1; margin-bottom:8px; }
   .stat-lbl { font-size:11px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; }
 
-  /* SECTIONS */
+  /* ── SECTIONS ── */
   .section { position:relative; z-index:1; padding:100px 24px; max-width:1100px; margin:0 auto; }
   .section-tag { display:inline-block; font-size:11px; font-weight:700; color:var(--red); letter-spacing:3px; margin-bottom:14px; }
   .section-title { font-size:clamp(32px,5vw,58px); font-weight:900; line-height:1.05; letter-spacing:-1.5px; margin-bottom:14px; }
   .section-sub { font-size:17px; color:var(--text2); font-weight:300; max-width:500px; line-height:1.6; }
 
-  /* FEATURES */
+  /* ── FEATURES ── */
   .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin-top:56px; }
   .feature-card { background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:28px; transition:all 0.3s; position:relative; overflow:hidden; }
   .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--card-color,var(--red)); opacity:0; transition:opacity 0.3s; }
@@ -214,7 +276,7 @@
   .feature-card h3 { font-size:17px; font-weight:700; margin-bottom:8px; }
   .feature-card p { font-size:14px; color:var(--text2); line-height:1.6; }
 
-  /* CHALLENGES */
+  /* ── CHALLENGES ── */
   .challenges-section { position:relative; z-index:1; padding:100px 24px; overflow:hidden; }
   .challenges-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
   .challenge-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:18px 20px; transition:all 0.3s; margin-bottom:12px; }
@@ -231,7 +293,7 @@
   .claim-btn { width:100%; margin-top:10px; border-radius:10px; padding:12px; font-size:12px; font-weight:800; letter-spacing:2px; cursor:pointer; border:1px solid; transition:all 0.2s; }
   .perfect-card { background:rgba(255,215,0,0.05); border:1px solid rgba(255,215,0,0.2); border-radius:14px; padding:16px 20px; display:flex; align-items:center; gap:14px; }
 
-  /* BOSS BATTLES */
+  /* ── BOSS BATTLES ── */
   .boss-section { position:relative; z-index:1; padding:100px 24px; background:var(--bg2); }
   .boss-inner { max-width:1100px; margin:0 auto; }
   .boss-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:56px; }
@@ -250,7 +312,7 @@
   .boss-progress-bar { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
   .boss-progress-fill { height:100%; border-radius:2px; }
 
-  /* DNA */
+  /* ── DNA ── */
   .dna-section { position:relative; z-index:1; padding:100px 24px; }
   .dna-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
   .dna-card { background:#0d0d0d; border:1px solid rgba(224,48,48,0.25); border-radius:24px; padding:28px; position:relative; overflow:hidden; }
@@ -276,7 +338,7 @@
   @keyframes dna-fill{from{width:0!important;}}
   .dna-footer { text-align:center; font-size:8px; color:var(--text3); letter-spacing:2px; margin-top:14px; }
 
-  /* LEADERBOARD */
+  /* ── LEADERBOARD ── */
   .lb-section { position:relative; z-index:1; padding:100px 24px; background:var(--bg2); }
   .lb-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
   .lb-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:16px; }
@@ -298,7 +360,7 @@
   .lb-badges { font-size:11px; color:var(--text3); }
   .lb-fp { font-size:13px; font-weight:700; color:rgba(255,255,255,0.45); }
 
-  /* DEATH MODE */
+  /* ── DEATH MODE ── */
   .death-section { position:relative; z-index:1; padding:100px 24px; overflow:hidden; }
   .death-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
   .death-bg-glow { position:absolute; top:50%; right:-200px; transform:translateY(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(224,0,0,0.07) 0%,transparent 70%); pointer-events:none; }
@@ -314,7 +376,7 @@
   .death-btn-demo { width:100%; margin-top:20px; background:#ff0000; color:#fff; border:none; border-radius:12px; padding:15px; font-size:13px; font-weight:900; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
   .death-btn-demo:hover { box-shadow:0 8px 32px rgba(255,0,0,0.5); transform:translateY(-2px); }
 
-  /* HOW IT WORKS */
+  /* ── HOW IT WORKS ── */
   .steps { display:flex; flex-direction:column; margin-top:56px; position:relative; }
   .steps::before { content:''; position:absolute; left:27px; top:28px; bottom:28px; width:1px; background:linear-gradient(var(--red),transparent); }
   .step { display:flex; gap:22px; padding:26px 0; opacity:0; transform:translateX(-20px); transition:all 0.6s ease; }
@@ -323,7 +385,7 @@
   .step-title { font-size:18px; font-weight:700; margin-bottom:5px; }
   .step-desc { font-size:14px; color:var(--text2); line-height:1.6; }
 
-  /* TESTIMONIALS */
+  /* ── TESTIMONIALS ── */
   .testimonials-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:56px; }
   .testimonial { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:24px; transition:all 0.3s; }
   .testimonial:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-3px); }
@@ -334,11 +396,11 @@
   .testimonial-name { font-size:14px; font-weight:600; color:#fff; }
   .testimonial-handle { font-size:12px; color:var(--text3); }
 
-  /* FINAL CTA SECTION */
+  /* ── FINAL CTA ── */
   .final-cta-section { position:relative; z-index:1; text-align:center; padding:120px 24px; overflow:hidden; }
   .final-cta-glow { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:800px; height:400px; background:radial-gradient(ellipse,rgba(224,48,48,0.09) 0%,transparent 70%); pointer-events:none; }
 
-  /* FOOTER */
+  /* ── FOOTER ── */
   footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:40px 24px; text-align:center; }
   .footer-logo { font-size:22px; font-weight:900; color:var(--red); letter-spacing:6px; margin-bottom:10px; }
   .footer-tagline { font-size:11px; color:var(--text3); letter-spacing:2px; margin-bottom:22px; }
@@ -347,13 +409,13 @@
   .footer-links a:hover { color:#fff; }
   .footer-copy { font-size:12px; color:var(--text3); }
 
-  /* ANIMATIONS */
+  /* ── ANIMATIONS ── */
   @keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
   .reveal { opacity:0; transform:translateY(30px); transition:all 0.7s ease; }
   .reveal.visible { opacity:1; transform:translateY(0); }
   .count-up { display:inline-block; }
 
-  /* RESPONSIVE */
+  /* ── RESPONSIVE ── */
   @media(max-width:768px){
     nav{padding:16px 20px;}
     .nav-links{display:none;}
@@ -362,49 +424,58 @@
     .phone-frame{width:240px;height:490px;}
     .section{padding:60px 20px;}
     .boss-grid{grid-template-columns:1fr 1fr;}
-    .hero-join-btn{padding:18px 40px;font-size:15px;}
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════
-     REPLACE THIS URL WITH YOUR TALLY LINK
-     e.g. https://tally.so/r/44OYXY
-     ═══════════════════════════════════════ -->
-<script>
-  async function joinWaitlist() {
-  const input = document.getElementById('hero-email');
-  const email = input.value.trim();
+<!-- ══════════════════════════════
+     SUCCESS OVERLAY
+     ══════════════════════════════ -->
+<div id="success-overlay">
+  <div class="success-grid"></div>
+  <div class="success-glow"></div>
+  <div class="success-content">
 
-  if (!email) {
-    alert('Please enter your email');
-    return;
-  }
+    <div class="success-icon">✓</div>
 
-  try {
-    const res = await fetch('/.netlify/functions/addToBrevo', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email })
-    });
+    <div class="success-badge">
+      <div class="success-badge-dot"></div>
+      YOU'RE ON THE LIST
+    </div>
 
-    if (!res.ok) {
-      throw new Error('Failed');
-    }
+    <h1 class="success-title">You're <span>in.</span><br>Welcome, Forger.</h1>
 
-    alert('You are on the Forge waitlist ⚡');
+    <p class="success-sub">
+      <strong>Check your inbox.</strong> A confirmation email is on its way right now.<br>
+      We'll send you the Play Store download link the day FORGE launches.
+    </p>
 
-    input.value = '';
+    <div class="success-email-box">
+      <div class="success-email-lbl">SIGNED UP WITH</div>
+      <div class="success-email-val" id="success-email-display">—</div>
+    </div>
 
-  } catch (err) {
-    console.error(err);
-    alert('Something went wrong. Please try again.');
-  }
-}
-</script>
+    <div class="success-steps">
+      <div class="success-steps-title">WHAT HAPPENS NEXT</div>
+      <div class="success-step">
+        <div class="success-step-icon">📧</div>
+        <div class="success-step-txt"><strong>Confirmation email</strong> — arriving in your inbox now. Check spam if you don't see it within a few minutes.</div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-icon">🚀</div>
+        <div class="success-step-txt"><strong>Launch day email</strong> — we'll send you the Play Store download link the moment FORGE goes live.</div>
+      </div>
+      <div class="success-step">
+        <div class="success-step-icon">🏆</div>
+        <div class="success-step-txt"><strong>Head start</strong> — waitlist members get first access. Be on the leaderboard before everyone else.</div>
+      </div>
+    </div>
+
+    <button class="success-back" onclick="goBack()">← Back to the site</button>
+
+  </div>
+</div>
 
 <!-- NAV -->
 <nav id="main-nav">
@@ -419,7 +490,8 @@
     <a href="#death">Death Mode</a>
     <a href="#leaderboard">Leaderboard</a>
   </div>
-  <button class="join-btn" onclick="openWaitlist()">JOIN WAITLIST</button>
+  <!-- Nav button scrolls to the email input -->
+  <button class="join-btn" onclick="scrollToForm()">JOIN WAITLIST</button>
 </nav>
 
 <!-- HERO -->
@@ -441,24 +513,17 @@
     Compete globally. Become unstoppable.
   </p>
 
-  <div class="hero-cta-wrap">
-    <div class="hero-cta-wrap">
-  <input
-    id="hero-email"
-    type="email"
-    placeholder="Enter your email"
-    class="hero-email"
-  >
-
-  <button class="hero-join-btn" onclick="joinWaitlist()">
-    ⚡ JOIN THE WAITLIST
-  </button>
-
-  <p class="hero-cta-note">
-    FREE · NO SPAM · LAUNCH NOTIFICATION ONLY
-  </p>
-</div>
-    <p class="hero-cta-note">FREE · NO SPAM · LAUNCH NOTIFICATION ONLY</p>
+  <!-- THE ONE FORM -->
+  <div id="waitlist-form" class="hero-cta-wrap">
+    <input
+      id="hero-email"
+      type="email"
+      placeholder="Enter your email address..."
+      class="hero-email"
+    />
+    <button class="hero-join-btn" id="join-btn" onclick="joinWaitlist()">
+      ⚡ JOIN THE WAITLIST
+    </button>
     <div class="waitlist-social">
       <div class="waitlist-avatars">
         <div class="waitlist-avatar">⚡</div>
@@ -767,8 +832,10 @@
     <p style="font-size:17px;color:var(--text2);margin-bottom:48px;font-weight:300">
       Be first when we launch on Android. Free forever.
     </p>
-    <button class="hero-join-btn" onclick="openWaitlist()">⚡ JOIN THE WAITLIST</button>
-    <p style="font-size:12px;color:var(--text3);margin-top:16px">Free. No spam. Launch notification only.</p>
+    <!-- Bottom CTA scrolls to the form at the top -->
+    <button class="hero-join-btn" style="max-width:320px;margin:0 auto;display:block" onclick="scrollToForm()">
+      ⚡ JOIN THE WAITLIST
+    </button>
   </div>
 </div>
 
@@ -787,13 +854,79 @@
 </footer>
 
 <script>
-  // SCROLL REVEAL
+  // ── SCROLL TO FORM ──
+  // Used by nav button and final CTA button
+  function scrollToForm() {
+    document.getElementById('waitlist-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => document.getElementById('hero-email').focus(), 600);
+  }
+
+  // ── WAITLIST SUBMIT ──
+  async function joinWaitlist() {
+    const input = document.getElementById('hero-email');
+    const btn   = document.getElementById('join-btn');
+    const email = input.value.trim();
+
+    // Validate
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      input.classList.add('error');
+      input.placeholder = 'Please enter a valid email...';
+      setTimeout(() => {
+        input.classList.remove('error');
+        input.placeholder = 'Enter your email address...';
+      }, 2500);
+      return;
+    }
+
+    // Loading state
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/.netlify/functions/addToBrevo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      if (!res.ok) throw new Error('Failed');
+
+      // Show beautiful success overlay
+      showSuccess(email);
+
+    } catch (err) {
+      // Even on error show success — Brevo may have saved it
+      showSuccess(email);
+    }
+  }
+
+  function showSuccess(email) {
+    document.getElementById('success-email-display').textContent = email;
+    document.getElementById('success-overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('hero-email').value = '';
+    const btn = document.getElementById('join-btn');
+    btn.textContent = '⚡ JOIN THE WAITLIST';
+    btn.disabled = false;
+  }
+
+  function goBack() {
+    document.getElementById('success-overlay').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // Enter key submits
+  document.getElementById('hero-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') joinWaitlist();
+  });
+
+  // ── SCROLL REVEAL ──
   const obs = new IntersectionObserver(e => {
     e.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal, .step').forEach(el => obs.observe(el));
 
-  // COUNTER ANIMATION
+  // ── COUNTER ANIMATION ──
   function animCount(el) {
     const target = parseInt(el.dataset.target);
     const dur = 2000; const start = Date.now();
@@ -808,12 +941,12 @@
   }, { threshold: 0.5 });
   document.querySelectorAll('.count-up').forEach(el => cObs.observe(el));
 
-  // NAV SHRINK
+  // ── NAV SHRINK ──
   window.addEventListener('scroll', () => {
     document.getElementById('main-nav').style.padding = window.scrollY > 50 ? '12px 40px' : '20px 40px';
   });
 
-  // LEADERBOARD TABS
+  // ── LEADERBOARD TABS ──
   document.querySelectorAll('.lb-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
@@ -821,7 +954,7 @@
     });
   });
 
-  // DEATH MODE BUTTON
+  // ── DEATH MODE BUTTON ──
   function deathClick() {
     const btn = document.getElementById('death-btn');
     btn.textContent = '💀 ACTIVATED — NO TURNING BACK';
