@@ -37,12 +37,34 @@
   #success-overlay {
     display:none; position:fixed; inset:0;
     background:var(--bg); z-index:200;
-    align-items:center; justify-content:center;
-    padding:24px; flex-direction:column; text-align:center;
+    flex-direction:column;
     overflow-y:auto;
   }
   #success-overlay.show { display:flex; animation:fade-in 0.5s ease; }
   @keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+
+  /* Success nav — identical to main nav */
+  .success-nav {
+    position:sticky; top:0; left:0; right:0; z-index:10;
+    padding:20px 40px; display:flex; align-items:center; justify-content:space-between;
+    background:rgba(8,8,8,0.92); backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border); flex-shrink:0;
+  }
+  .success-nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .success-nav-logo-icon { width:36px; height:36px; border-radius:10px; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 0 20px rgba(224,48,48,0.4); }
+  .success-nav-logo-txt { font-size:20px; font-weight:900; color:#fff; letter-spacing:4px; }
+  .success-nav-back {
+    background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); border:1px solid var(--border);
+    padding:10px 20px; border-radius:10px; font-size:13px; font-weight:600;
+    cursor:pointer; transition:all 0.2s;
+  }
+  .success-nav-back:hover { background:rgba(255,255,255,0.1); color:#fff; }
+
+  /* Success body content */
+  .success-body {
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:60px 24px; position:relative; text-align:center;
+  }
   .success-grid {
     position:absolute; inset:0;
     background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
@@ -107,13 +129,6 @@
   }
   .success-step-txt { font-size:13px; color:var(--text2); line-height:1.5; padding-top:4px; }
   .success-step-txt strong { color:#fff; }
-  .success-back {
-    display:inline-flex; align-items:center; gap:8px;
-    color:var(--text3); font-size:13px; cursor:pointer;
-    transition:color 0.2s; background:none; border:none;
-    animation:fade-up 0.6s ease 0.8s both;
-  }
-  .success-back:hover { color:#fff; }
 
   /* ── NAV ── */
   nav {
@@ -419,6 +434,7 @@
   @media(max-width:768px){
     nav{padding:16px 20px;}
     .nav-links{display:none;}
+    .success-nav{padding:16px 20px;}
     .death-inner,.challenges-inner,.dna-inner,.lb-inner{grid-template-columns:1fr;gap:40px;}
     .death-bg-glow{display:none;}
     .phone-frame{width:240px;height:490px;}
@@ -433,48 +449,60 @@
      SUCCESS OVERLAY
      ══════════════════════════════ -->
 <div id="success-overlay">
-  <div class="success-grid"></div>
-  <div class="success-glow"></div>
-  <div class="success-content">
 
-    <div class="success-icon">✓</div>
-
-    <div class="success-badge">
-      <div class="success-badge-dot"></div>
-      YOU'RE ON THE LIST
+  <!-- Same nav bar as main site -->
+  <div class="success-nav">
+    <div class="success-nav-logo">
+      <div class="success-nav-logo-icon">⚡</div>
+      <span class="success-nav-logo-txt">FORGE</span>
     </div>
-
-    <h1 class="success-title">You're <span>in.</span><br>Welcome, Forger.</h1>
-
-    <p class="success-sub">
-      <strong>Check your inbox.</strong> A confirmation email is on its way right now.<br>
-      We'll send you the Play Store download link the day FORGE launches.
-    </p>
-
-    <div class="success-email-box">
-      <div class="success-email-lbl">SIGNED UP WITH</div>
-      <div class="success-email-val" id="success-email-display">—</div>
-    </div>
-
-    <div class="success-steps">
-      <div class="success-steps-title">WHAT HAPPENS NEXT</div>
-      <div class="success-step">
-        <div class="success-step-icon">📧</div>
-        <div class="success-step-txt"><strong>Confirmation email</strong> — arriving in your inbox now. Check spam if you don't see it within a few minutes.</div>
-      </div>
-      <div class="success-step">
-        <div class="success-step-icon">🚀</div>
-        <div class="success-step-txt"><strong>Launch day email</strong> — we'll send you the Play Store download link the moment FORGE goes live.</div>
-      </div>
-      <div class="success-step">
-        <div class="success-step-icon">🏆</div>
-        <div class="success-step-txt"><strong>Head start</strong> — waitlist members get first access. Be on the leaderboard before everyone else.</div>
-      </div>
-    </div>
-
-    <button class="success-back" onclick="goBack()">← Back to the site</button>
-
+    <button class="success-nav-back" onclick="goBack()">← Back to site</button>
   </div>
+
+  <!-- Content area -->
+  <div class="success-body">
+    <div class="success-grid"></div>
+    <div class="success-glow"></div>
+    <div class="success-content">
+
+      <div class="success-icon">✓</div>
+
+      <div class="success-badge">
+        <div class="success-badge-dot"></div>
+        YOU'RE ON THE LIST
+      </div>
+
+      <h1 class="success-title">You're <span>in.</span><br>Welcome, Forger.</h1>
+
+      <p class="success-sub">
+        <strong>Check your inbox.</strong> A confirmation email is on its way right now.<br>
+        We'll send you the Play Store download link the day FORGE launches.
+      </p>
+
+      <div class="success-email-box">
+        <div class="success-email-lbl">SIGNED UP WITH</div>
+        <div class="success-email-val" id="success-email-display">—</div>
+      </div>
+
+      <div class="success-steps">
+        <div class="success-steps-title">WHAT HAPPENS NEXT</div>
+        <div class="success-step">
+          <div class="success-step-icon">📧</div>
+          <div class="success-step-txt"><strong>Confirmation email</strong> — arriving in your inbox now. Check spam if you don't see it within a few minutes.</div>
+        </div>
+        <div class="success-step">
+          <div class="success-step-icon">🚀</div>
+          <div class="success-step-txt"><strong>Launch day email</strong> — we'll send you the Play Store download link the moment FORGE goes live.</div>
+        </div>
+        <div class="success-step">
+          <div class="success-step-icon">🏆</div>
+          <div class="success-step-txt"><strong>Head start</strong> — waitlist members get first access. Be on the leaderboard before everyone else.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- NAV -->
@@ -490,7 +518,6 @@
     <a href="#death">Death Mode</a>
     <a href="#leaderboard">Leaderboard</a>
   </div>
-  <!-- Nav button scrolls to the email input -->
   <button class="join-btn" onclick="scrollToForm()">JOIN WAITLIST</button>
 </nav>
 
@@ -513,17 +540,9 @@
     Compete globally. Become unstoppable.
   </p>
 
-  <!-- THE ONE FORM -->
   <div id="waitlist-form" class="hero-cta-wrap">
-    <input
-      id="hero-email"
-      type="email"
-      placeholder="Enter your email address..."
-      class="hero-email"
-    />
-    <button class="hero-join-btn" id="join-btn" onclick="joinWaitlist()">
-      ⚡ JOIN THE WAITLIST
-    </button>
+    <input id="hero-email" type="email" placeholder="Enter your email address..." class="hero-email" />
+    <button class="hero-join-btn" id="join-btn" onclick="joinWaitlist()">⚡ JOIN THE WAITLIST</button>
     <div class="waitlist-social">
       <div class="waitlist-avatars">
         <div class="waitlist-avatar">⚡</div>
@@ -536,7 +555,6 @@
     </div>
   </div>
 
-  <!-- PHONE MOCKUP -->
   <div class="app-preview">
     <div class="phone-frame">
       <div class="phone-notch"></div>
@@ -826,16 +844,9 @@
   <div class="final-cta-glow"></div>
   <div style="position:relative;z-index:1" class="reveal">
     <div class="section-tag" style="display:block;margin-bottom:20px">JOIN THE WAITLIST</div>
-    <h2 style="font-size:clamp(36px,6vw,76px);font-weight:900;line-height:1.0;letter-spacing:-2px;margin-bottom:18px">
-      Ready to<br><span style="color:var(--red)">FORGE</span> yourself?
-    </h2>
-    <p style="font-size:17px;color:var(--text2);margin-bottom:48px;font-weight:300">
-      Be first when we launch on Android. Free forever.
-    </p>
-    <!-- Bottom CTA scrolls to the form at the top -->
-    <button class="hero-join-btn" style="max-width:320px;margin:0 auto;display:block" onclick="scrollToForm()">
-      ⚡ JOIN THE WAITLIST
-    </button>
+    <h2 style="font-size:clamp(36px,6vw,76px);font-weight:900;line-height:1.0;letter-spacing:-2px;margin-bottom:18px">Ready to<br><span style="color:var(--red)">FORGE</span> yourself?</h2>
+    <p style="font-size:17px;color:var(--text2);margin-bottom:48px;font-weight:300">Be first when we launch on Android. Free forever.</p>
+    <button class="hero-join-btn" style="max-width:320px;margin:0 auto;display:block" onclick="scrollToForm()">⚡ JOIN THE WAITLIST</button>
   </div>
 </div>
 
@@ -854,82 +865,66 @@
 </footer>
 
 <script>
-  // ── SCROLL TO FORM ──
-  // Used by nav button and final CTA button
   function scrollToForm() {
-    document.getElementById('waitlist-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('waitlist-form').scrollIntoView({ behavior:'smooth', block:'center' });
     setTimeout(() => document.getElementById('hero-email').focus(), 600);
   }
 
-  // ── WAITLIST SUBMIT ──
-async function joinWaitlist() {
-  const input = document.getElementById('hero-email');
-  const btn   = document.getElementById('join-btn');
-  const email = input.value.trim();
+  async function joinWaitlist() {
+    const input = document.getElementById('hero-email');
+    const btn   = document.getElementById('join-btn');
+    const email = input.value.trim();
 
-  // Validate
-  if (!email || !email.includes('@') || !email.includes('.')) {
-    input.classList.add('error');
-    input.placeholder = 'Please enter a valid email...';
-    setTimeout(() => {
-      input.classList.remove('error');
-      input.placeholder = 'Enter your email address...';
-    }, 2500);
-    return;
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      input.classList.add('error');
+      input.placeholder = 'Please enter a valid email...';
+      setTimeout(() => { input.classList.remove('error'); input.placeholder = 'Enter your email address...'; }, 2500);
+      return;
+    }
+
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/.netlify/functions/addToBrevo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) throw new Error('Failed');
+      showSuccess(email);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      btn.textContent = '⚡ JOIN THE WAITLIST';
+      btn.disabled = false;
+    }
   }
 
-  // Loading state
-  btn.textContent = '...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('/.netlify/functions/addToBrevo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-
-    if (!res.ok) throw new Error('Failed');
-
-    showSuccess(email);
-
-  } catch (err) {
-    console.error(err);
-    alert('Something went wrong. Please try again.');
-
+  function showSuccess(email) {
+    document.getElementById('success-email-display').textContent = email;
+    document.getElementById('success-overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('hero-email').value = '';
+    const btn = document.getElementById('join-btn');
     btn.textContent = '⚡ JOIN THE WAITLIST';
     btn.disabled = false;
   }
-} // <-- THIS BRACE MUST EXIST
-
-function showSuccess(email) {
-  document.getElementById('success-email-display').textContent = email;
-  document.getElementById('success-overlay').classList.add('show');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('hero-email').value = '';
-
-  const btn = document.getElementById('join-btn');
-  btn.textContent = '⚡ JOIN THE WAITLIST';
-  btn.disabled = false;
-}
 
   function goBack() {
     document.getElementById('success-overlay').classList.remove('show');
     document.body.style.overflow = '';
   }
 
-  // Enter key submits
   document.getElementById('hero-email').addEventListener('keydown', e => {
     if (e.key === 'Enter') joinWaitlist();
   });
 
-  // ── SCROLL REVEAL ──
   const obs = new IntersectionObserver(e => {
     e.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal, .step').forEach(el => obs.observe(el));
 
-  // ── COUNTER ANIMATION ──
   function animCount(el) {
     const target = parseInt(el.dataset.target);
     const dur = 2000; const start = Date.now();
@@ -944,12 +939,10 @@ function showSuccess(email) {
   }, { threshold: 0.5 });
   document.querySelectorAll('.count-up').forEach(el => cObs.observe(el));
 
-  // ── NAV SHRINK ──
   window.addEventListener('scroll', () => {
     document.getElementById('main-nav').style.padding = window.scrollY > 50 ? '12px 40px' : '20px 40px';
   });
 
-  // ── LEADERBOARD TABS ──
   document.querySelectorAll('.lb-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
@@ -957,7 +950,6 @@ function showSuccess(email) {
     });
   });
 
-  // ── DEATH MODE BUTTON ──
   function deathClick() {
     const btn = document.getElementById('death-btn');
     btn.textContent = '💀 ACTIVATED — NO TURNING BACK';
