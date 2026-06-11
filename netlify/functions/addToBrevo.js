@@ -16,12 +16,15 @@ exports.handler = async (event) => {
       })
     });
 
-    const data = await response.text();
+const data = await response.text();
 
-    return {
-      statusCode: response.status,
-      body: data
-    };
+console.log("BREVO STATUS:", response.status);
+console.log("BREVO RESPONSE:", data);
+
+return {
+  statusCode: response.status,
+  body: data
+};
   } catch (error) {
     return {
       statusCode: 500,
