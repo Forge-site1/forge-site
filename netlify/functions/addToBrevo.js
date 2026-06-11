@@ -18,6 +18,14 @@ exports.handler = async (event) => {
 
 const data = await response.text();
 
+console.log("KEY EXISTS:", !!process.env.BREVO_API_KEY);
+console.log(
+  "KEY PREFIX:",
+  process.env.BREVO_API_KEY?.substring(0, 8)
+);
+console.log("BREVO STATUS:", response.status);
+console.log("BREVO RESPONSE:", data);
+    
 return {
   statusCode: response.status,
   body: data
